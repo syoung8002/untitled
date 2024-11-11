@@ -1,0 +1,84 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+#<<< API Gateway / Routes
+      routes:
+        - id: order-management
+          uri: http://localhost:8082
+          predicates:
+            - Path=/orders/**, 
+        - id: production-management
+          uri: http://localhost:8083
+          predicates:
+            - Path=/productions/**, 
+        - id: logistics-management
+          uri: http://localhost:8084
+          predicates:
+            - Path=/logistics/**, 
+        - id: sales-management
+          uri: http://localhost:8085
+          predicates:
+            - Path=/sales/**, 
+        - id: frontend
+          uri: http://localhost:8080
+          predicates:
+            - Path=/**
+#>>> API Gateway / Routes
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: order-management
+          uri: http://orderManagement:8080
+          predicates:
+            - Path=/orders/**, 
+        - id: production-management
+          uri: http://productionManagement:8080
+          predicates:
+            - Path=/productions/**, 
+        - id: logistics-management
+          uri: http://logisticsManagement:8080
+          predicates:
+            - Path=/logistics/**, 
+        - id: sales-management
+          uri: http://salesManagement:8080
+          predicates:
+            - Path=/sales/**, 
+        - id: frontend
+          uri: http://frontend:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080
